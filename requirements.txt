@@ -2,3 +2,5 @@ coverage
 pylint
 autopep8
 colorama
+requests
+python-dotenv
