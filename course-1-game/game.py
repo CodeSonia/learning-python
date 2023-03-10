@@ -1,34 +1,44 @@
 import requests
 
+def string_to_ints(str):
+    x, y = str.split(':')
+    return [int(x), int(y)]
+
+# Convert from an x/y string (e.g. '2:1') to a compass point ('n', 's', 'e', 'w')
+# same x but y is higher = north
+# same x but y is lower = south
+# x is lower and y is the same = west
+# x is higher and y is the same = east
 def convert_direction(current_node, current_location):
     nodes = current_node['nodes']
     can_go = []
     for node in nodes:
-        x = int(node[0])
-        y = int(node[2])
+        x, y = string_to_ints(node)
+        current_x, current_y = string_to_ints(current_location)
 
-        current_node_x = int(current_location[0])
-        current_node_y = int(current_location[2])
-
-
-        if x == current_node_x and y > current_node_y:
+        if x == current_x and y > current_y:
             can_go.append("n")
-
-        if x == current_node_x and y < current_node_y:
+        if x > current_x and y == current_y:
+            can_go.append("e")
+        if x == current_x and y < current_y:
             can_go.append("s")
-
-        if x < current_node_x and y == current_node_y:
+        if x < current_x and y == current_y:
             can_go.append("w")
 
-        if x > current_node_x and y == current_node_y:
-            can_go.append("e")
-    print(can_go)
     return can_go
 
-    #same x but y is higher = north
-    #same x but y is lower = south
-    #x is lower and y is the same = west
-    #x is higher and y is the same = east
+# Convert from a compass point ('n', 's', 'e', 'w') to a x/y string (e.g. '2:1')
+def convert_compass_point(compass_point, current_location):
+    x, y = current_location.split(':')
+    if compass_point == 'n':
+        return f'{x}:{int(y) + 1}'
+    elif compass_point == 's':
+        return f'{x}:{int(y) - 1}'
+    elif compass_point == 'e':
+        return f'{int(x) + 1}:{y}'
+    elif compass_point == 'w':
+        return f'{int(x) - 1}:{y}'
+
 
 r = requests.get('https://7w298.wiremockapi.cloud/labyrinth')
 if r.status_code == 200:
@@ -53,9 +63,11 @@ if r.status_code == 200:
 
     while current_node['alive'] and not current_node["exit"]:
         print(current_node['description'])
-        next_node = input(f"Where would you like to move? The available nodes are: {convert_direction(current_node, current_location)}")
+        next_node = input(f"Where would you like to move? The available nodes are: {convert_direction(current_node, current_location)} ")
 
-        current_node = data['maze'][next_node]
+        node_key = convert_compass_point(next_node, current_location)
+        current_node = data['maze'][node_key]
+        current_location = node_key
 
     print(current_node['description'])
 else:
