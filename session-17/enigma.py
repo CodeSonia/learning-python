@@ -57,25 +57,44 @@ class Machine:
 mappings = requests.get('https://7w298.wiremockapi.cloud/enigma/mappings/long')
 mapping_data = mappings.json()
 
-rotor_setting = ["I", "II", "III"]
-
-
-r = Reflector("A")
-x = Rotor("I")
+r = Reflector("C")
+x = Rotor("IV")
 y = Rotor("II")
-z = Rotor("III")
+z = Rotor("V")
 
 machine = Machine()
 machine.config([x, y, z], r)
 
-encode_message = machine.encode_string("wEl ovep  3ythOn!!!!!")
+encode_message = machine.encode_string("Have you enjoyed learning Python?")
 decode_message = machine.encode_string(encode_message)
 print(encode_message)
 print(decode_message)
 
+
+# READ A FILE, ENCODE IT AND WRITE TO A FILE, THEN DECODE AND WRITE TO A FILE!
+# stream = open('moby-dick.txt')
+# output = open('output.txt', 'w')
+# book = stream.readlines()
+# for line in book:
+#     output.writelines(machine.encode_string(line))
+
+# stream = open('output.txt')
+# output = open('decoded.txt', 'w')
+# book = stream.readlines()
+# for line in book:
+#     output.writelines(machine.encode_string(line))
+
+
+
+        # input = open('output.txt', "w")
+        # decoded_message = input.readlines()
+        # for line in decoded_message:
+        #     self.encode_string(line)
+
+
+
+
 # print(machine.encode_char("H"))
-
-
 # print(x.value_from_key("H"))
 # print(x.key_from_value("Q"))
 # print(y.value_from_key("H"))
