@@ -16,7 +16,6 @@ class Reflector:
     def get_key_setting(self):
         return mapping_data["reflectors"][self.id]
 
-
 class Rotor(Reflector):
     def __init__(self, id):
         super().__init__(id)
@@ -35,11 +34,13 @@ class Machine:
         self.reflector_setting = reflector_setting
 
     def encode_char(self, letter):
+        rotors_reversed = list(reversed(self.rotor_setting))
+
         for rotor in self.rotor_setting:
             letter = rotor.value_from_key(letter)
         letter = self.reflector_setting.value_from_key(letter)
 
-        for rotor in reversed(self.rotor_setting):
+        for rotor in rotors_reversed:
             letter = rotor.key_from_value(letter)
         return letter
 
